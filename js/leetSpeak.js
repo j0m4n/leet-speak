@@ -1,46 +1,44 @@
-var mot = prompt("Veuillez sasir un mot: ");
+//Créer les éléments
+var bodyElt = document.querySelector("body");
+var formElt = document.createElement("form");
 
-function isVoyelle(lettre) {
-    var resultat;
-    if ((lettre === "a") || (lettre === "e") || (lettre === "i") || 
-        (lettre === "o") || (lettre === "u") || (lettre === "y"))
-         resultat = true;
-    else resultat = false;
-    return resultat;
-}
+var p1Elt = document.createElement("p");
+p1Elt.textContent ="Taper un mot: ";
+var inputElt = document.createElement("input");
+    inputElt.required = true;
 
-function compterNbVoyelles(expression) {
-    var nbVoyelles = 0;
-    for (var i = 0; i < expression.length; i++) {
-        if (isVoyelle(expression[i]) === true) 
-            nbVoyelles++;  
+var p2Elt = document.createElement("p");
+p2Elt.textContent ="Résultat en leet speek: ";
+var resultElt = document.createElement("input");
+    resultElt.required = false; // champ libre qui servira à la conversion
+
+//ajoute les éléments
+bodyElt.appendChild(formElt);
+formElt.appendChild(p1Elt);
+p1Elt.appendChild(inputElt);
+formElt.appendChild(p2Elt);
+p2Elt.appendChild(resultElt);
+
+//En cas de d'appui sur une touche
+inputElt.addEventListener("keypress", function(e){
+    //on recupere le contenu a convertir
+    var aConvertir = String.fromCharCode(e.charCode);
+    if(e.charCode !== 0) // si la valueur est différente d'un backspace
+    {
+        inputElt.value += aConvertir;
+        resultElt.value += convertirEnLeetSpeak(aConvertir);
     }
-    var message = "Il contient " + nbVoyelles + " voyelles et " + Number(expression.length - nbVoyelles) + " consonnes";
-    return message;
-}
-
-function inverser(expression){
-    var motInv = "";
-    // Solution par incrément positif
-    //for (var i = 0; i < expression.length; i++){
-    //     motInv = expression[i] + motInv;
-    //}
-    
-    //Solution par incrément négatif
-    for (var i =  expression.length - 1; i >= 0; i--){
-         motInv = motInv + expression[i] ;
+    else // cas d'un retour arriere
+    {
+        var inputTemp = inputElt.value;
+        inputElt.value = "";
+        for(var i =0; i < inputTemp.length - 1; i++ ) 
+            inputElt.value += inputTemp[i];   
+        
+        resultElt.value = convertirEnLeetSpeak(inputElt.value);
     }
-    return motInv;
-}
-
-function palindrome(expression){
-    var resultat;
-    if(expression.toLowerCase() === inverser(expression).toLowerCase()) 
-        resultat = "c'est un palindrome";
-    else 
-        resultat = "ce n'est pas un palindrome";
-    return resultat;
-}
+    e.preventDefault();
+});
 
 function trouverLettreLeet(lettre){
     var resultat = "";
@@ -77,11 +75,3 @@ function convertirEnLeetSpeak(expression){
     }
     return resultat;
 }
-
-console.log("Le mot " + mot + " contient " + mot.length + " caractères (s)");
-console.log("Il s'ecrit en minuscule " + mot.toLowerCase());
-console.log("Il s'ecrit en majuscule " + mot.toUpperCase());
-console.log(compterNbVoyelles(mot));
-console.log(inverser(mot));
-console.log(palindrome(mot));
-console.log(convertirEnLeetSpeak(mot));
